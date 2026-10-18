@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FoodOps | Cart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body class="menu-page">
+
+
+    <!-- Navigation -->
+    <nav class="food-navbar">
+
+        <div class="food-logo-text">
+            🍴 FoodOps
+        </div>
+
+        <a href="{{ url_for('menu') }}"
+           class="cart-button">
+
+            ← Back to Menu
+
+        </a>
+
+    </nav>
+
+
+    <!-- Cart -->
+    <main class="cart-container">
+
+        <h1>
+            Your Cart 🛒
+        </h1>
+
+
+        {% if cart %}
+
+            {% set prices = {
+                'Margherita Pizza': 249,
+                'Classic Burger': 179,
+                'Chicken Biryani': 299,
+                'Hakka Noodles': 199,
+                'Healthy Bowl': 159,
+                'Chocolate Cake': 149
+            } %}
+
+
+            <div class="cart-items">
+
+
+                {% for item in cart | unique %}
+
+                    {% set quantity = cart
+                        | select('equalto', item)
+                        | list
+                        | length %}
+
+
+                    {% set item_total = prices[item] * quantity %}
+
+
+                    <div class="cart-item">
+
+
+                        <!-- Food information -->
+
+                        <div class="cart-item-info">
+
+                            <div class="cart-item-name">
+
+                                {% if item == 'Margherita Pizza' %}
+                                    🍕
+                                {% elif item == 'Classic Burger' %}
+                                    🍔
+                                {% elif item == 'Chicken Biryani' %}
+                                    🍗
+                                {% elif item == 'Hakka Noodles' %}
+                                    🍜
+                                {% elif item == 'Healthy Bowl' %}
+                                    🥗
+                                {% elif item == 'Chocolate Cake' %}
+                                    🍰
+                                {% else %}
+                                    🍽️
+                                {% endif %}
+
+                                {{ item }}
+
+                            </div>
+
+
+                            <div class="cart-item-price">
+
+                                ₹{{ prices[item] }} × {{ quantity }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Right side -->
+
+                        <div class="cart-item-right">
+
+
+                            <!-- Quantity controls -->
+
+                            <div class="cart-quantity-control">
+
+                                <!-- Remove ONE quantity -->
+
+                                <a href="{{ url_for('remove_from_cart', item=item) }}"
+                                   class="cart-quantity-button">
+
+                                    −
+
+                                </a>
+
+
+                                <span class="cart-quantity">
+
+                                    {{ quantity }}
+
+                                </span>
+
+
+                                <!-- Add ONE quantity -->
+
+                                <a href="{{ url_for('add_from_cart', item=item) }}"
+                                   class="cart-quantity-button">
+
+                                    +
+
+                                </a>
+
+                            </div>
+
+
+                            <!-- Item total -->
+
+                            <strong class="cart-item-total">
+
+                                ₹{{ item_total }}
+
+                            </strong>
+
+
+                            <!--
+                                Remove the ENTIRE item.
+                                This is different from the − button.
+                            -->
+
+                            <a href="{{ url_for('remove_all_from_cart', item=item) }}"
+                               class="remove-button">
+
+                                Remove
+
+                            </a>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Order Summary -->
+            <!-- ========================= -->
+
+            {% set subtotal = namespace(value=0) %}
+
+
+            {% for item in cart %}
+
+                {% if item in prices %}
+
+                    {% set subtotal.value = subtotal.value + prices[item] %}
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            <div class="cart-summary">
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong>
+                        ₹{{ subtotal.value }}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <strong class="free-delivery">
+                        FREE
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-row total-row">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₹{{ subtotal.value }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Place Order -->
+
+            <form method="POST"
+                  action="{{ url_for('place_order') }}">
+
+                <button type="submit"
+                        class="checkout-button">
+
+                    Place Order
+
+                </button>
+
+            </form>
+
+
+        {% else %}
+
+
+            <!-- Empty Cart -->
+
+            <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
+
+                <h2>
+                    Your cart is empty
+                </h2>
+
+                <p>
+                    Add some delicious food to your cart.
+                </p>
+
+                <a href="{{ url_for('menu') }}"
+                   class="add-button">
+
+                    Browse Menu
+
+                </a>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+</body>
+
+</html>

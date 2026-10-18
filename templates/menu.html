@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodOps | Menu</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="menu-page">
+
+    <!-- Navigation -->
+    <nav class="food-navbar">
+
+        <div class="food-logo-text">
+            🍴 FoodOps
+        </div>
+
+        <div class="nav-right">
+
+            <span>
+                Welcome, {{ email }}
+            </span>
+
+            <a href="{{ url_for('cart') }}"
+               class="cart-button">
+                🛒 Cart ({{ cart_count }})
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="menu-container">
+
+
+        <!-- Hero Section -->
+        <section class="menu-hero">
+
+            <div>
+
+                <p class="hero-small-title">
+                    FOODOPS
+                </p>
+
+                <h1>
+                    What are you craving today? 🍽️
+                </h1>
+
+                <p>
+                    Discover delicious food and order your favourites.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Categories -->
+        <section class="categories">
+
+            <h2>
+                Explore Categories
+            </h2>
+
+            <div class="category-list">
+
+                <div class="category">
+                    <span>🍕</span>
+                    <p>Pizza</p>
+                </div>
+
+                <div class="category">
+                    <span>🍔</span>
+                    <p>Burgers</p>
+                </div>
+
+                <div class="category">
+                    <span>🍗</span>
+                    <p>Biryani</p>
+                </div>
+
+                <div class="category">
+                    <span>🍜</span>
+                    <p>Noodles</p>
+                </div>
+
+                <div class="category">
+                    <span>🥗</span>
+                    <p>Healthy</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Food Items -->
+        <section class="food-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Popular Food
+                </h2>
+
+                <span>
+                    Popular near you
+                </span>
+
+            </div>
+
+
+            <div class="food-grid">
+
+
+                <!-- ========================= -->
+                <!-- Pizza -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image pizza">
+                        🍕
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Margherita Pizza
+                        </h3>
+
+                        <p class="food-description">
+                            Fresh mozzarella, tomato sauce and basil.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹249
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Margherita Pizza') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Margherita Pizza', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Margherita Pizza') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Burger -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image burger">
+                        🍔
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Classic Burger
+                        </h3>
+
+                        <p class="food-description">
+                            Juicy patty with fresh vegetables and cheese.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹179
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Classic Burger') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Classic Burger', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Classic Burger') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Biryani -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image biryani">
+                        🍗
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Chicken Biryani
+                        </h3>
+
+                        <p class="food-description">
+                            Fragrant basmati rice with spicy chicken.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹299
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Chicken Biryani') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Chicken Biryani', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Chicken Biryani') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Noodles -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image noodles">
+                        🍜
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Hakka Noodles
+                        </h3>
+
+                        <p class="food-description">
+                            Stir-fried noodles with vegetables.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹199
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Hakka Noodles') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Hakka Noodles', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Hakka Noodles') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Healthy Bowl -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image healthy">
+                        🥗
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Healthy Bowl
+                        </h3>
+
+                        <p class="food-description">
+                            Fresh vegetables, grains and healthy toppings.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹159
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Healthy Bowl') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Healthy Bowl', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Healthy Bowl') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Chocolate Cake -->
+                <!-- ========================= -->
+
+                <div class="food-card">
+
+                    <div class="food-image dessert">
+                        🍰
+                    </div>
+
+                    <div class="food-details">
+
+                        <h3>
+                            Chocolate Cake
+                        </h3>
+
+                        <p class="food-description">
+                            Rich chocolate cake with creamy frosting.
+                        </p>
+
+                        <div class="food-bottom">
+
+                            <strong>
+                                ₹149
+                            </strong>
+
+                            <div class="quantity-control">
+
+                                <a href="{{ url_for('remove_from_menu', item='Chocolate Cake') }}"
+                                   class="quantity-button">
+                                    −
+                                </a>
+
+                                <span class="quantity">
+                                    {{ quantities.get('Chocolate Cake', 0) }}
+                                </span>
+
+                                <a href="{{ url_for('add_to_cart', item='Chocolate Cake') }}"
+                                   class="quantity-button">
+                                    +
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="food-footer">
+
+        <p>
+            FoodOps • Good food. Delivered simply.
+        </p>
+
+        <p class="copyright">
+            © 2026 Eshwar Kodavali. All rights reserved.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

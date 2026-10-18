@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DevOps Portal</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">DevOps Portal</div>
+
+        <div class="nav-user">
+            <span>Welcome</span>
+            <strong>{{ email }}</strong>
+        </div>
+    </nav>
+
+
+    <main class="dashboard">
+
+        <section class="welcome-section">
+
+            <div>
+                <p class="small-title">DEVOPS LOGIN APPLICATION</p>
+
+                <h1>Welcome back! 👋</h1>
+
+                <p class="welcome-text">
+                    You have successfully logged in to the application.
+                </p>
+
+                <div class="user-email">
+                    {{ email }}
+                </div>
+            </div>
+
+        </section>
+
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-icon">🚀</div>
+
+                <h3>Application</h3>
+
+                <p>Flask Application</p>
+
+                <span class="status">Running</span>
+            </div>
+
+
+            <div class="card">
+                <div class="card-icon">✓</div>
+
+                <h3>System Status</h3>
+
+                <p>Application health</p>
+
+                <span class="status">Healthy</span>
+            </div>
+
+
+            <div class="card">
+                <div class="card-icon">☁</div>
+
+                <h3>Environment</h3>
+
+                <p>Current environment</p>
+
+                <span class="status">Local</span>
+            </div>
+
+        </section>
+
+
+        <section class="info-section">
+
+            <h2>DevOps Login Application</h2>
+
+            <p>
+                A Python Flask application built as a hands-on
+                DevOps deployment project.
+            </p>
+
+            <div class="tech-stack">
+                <span>Python</span>
+                <span>Flask</span>
+                <span>Git</span>
+                <span>AWS</span>
+                <span>Terraform</span>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>DevOps Login Application • Built By Sai Eshwar</p>
+    </footer>
+
+</body>
+</html>

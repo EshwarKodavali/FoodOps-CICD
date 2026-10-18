@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodOps | Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="food-login-page">
+
+    <div class="food-login-container">
+
+        <div class="food-logo">
+            🍴
+        </div>
+
+        <h1>FoodOps</h1>
+
+        <p class="food-tagline">
+            Good food. Delivered simply.
+        </p>
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
+
+            <button type="submit" class="food-login-button">
+                Login
+            </button>
+
+        </form>
+
+        <p class="food-login-footer">
+            Discover delicious food near you
+        </p>
+
+    </div>
+
+</body>
+
+</html>
