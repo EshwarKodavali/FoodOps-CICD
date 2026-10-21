@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   test:
     name: Run Tests
@@ -33,3 +37,9 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t foodops:latest .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::859679100707:role/FoodOps-GitHubActions-ECR
+          aws-region: us-east-1
