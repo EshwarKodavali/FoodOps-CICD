@@ -43,3 +43,6 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::859679100707:role/FoodOps-GitHubActions-ECR
           aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
