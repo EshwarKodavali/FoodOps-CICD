@@ -46,3 +46,9 @@ jobs:
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Docker image
+        run: docker tag foodops:latest 859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
+
+      - name: Push Docker image to ECR
+        run: docker push 859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
