@@ -173,8 +173,8 @@ resource "aws_eks_cluster" "foodops_eks" {
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   access_config {
-  authentication_mode = "API_AND_CONFIG_MAP"
-}
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
 
   vpc_config {
 
@@ -226,6 +226,30 @@ resource "aws_eks_access_policy_association" "github_actions" {
 
   }
 
+  depends_on = [
+    aws_eks_access_entry.github_actions
+  ]
+
+}
+
+resource "aws_eks_access_entry" "root_admin" {
+  cluster_name  = aws_eks_cluster.foodops_eks.name
+  principal_arn = "arn:aws:iam::859679100707:root"
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "root_admin" {
+  cluster_name  = aws_eks_cluster.foodops_eks.name
+  principal_arn = aws_eks_access_entry.root_admin.principal_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [
+    aws_eks_access_entry.root_admin
+  ]
 }
 
 # ============================================================
@@ -424,7 +448,7 @@ resource "aws_iam_role" "github_actions_ecr" {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
 
-            "token.actions.githubusercontent.com:sub" = "repo:EshwarKodavali@110181805/FoodOps-CICD@1424750867:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:EshwarKodavali/FoodOps-CICD:ref:refs/heads/main"
           }
         }
       }
