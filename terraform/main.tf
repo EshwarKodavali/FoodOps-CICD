@@ -448,7 +448,7 @@ resource "aws_iam_role" "github_actions_ecr" {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
 
-            "token.actions.githubusercontent.com:sub" = "repo:EshwarKodavali/FoodOps-CICD:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:EshwarKodavali@110181805/FoodOps-CICD@1424750867:ref:refs/heads/main"
           }
         }
       }
