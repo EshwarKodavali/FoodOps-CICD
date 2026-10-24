@@ -4,27 +4,54 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
 
+
+# GitHub Actions permissions
 permissions:
   id-token: write
   contents: read
 
+
 jobs:
+
+  # ==========================================================
+  # TEST + BUILD
+  # ==========================================================
+
   test:
-    name: Run Tests
+
+    name: Test and Build
+
     runs-on: ubuntu-latest
 
     steps:
+
+      # --------------------------------------------------------
+      # Checkout
+      # --------------------------------------------------------
+
       - name: Checkout code
         uses: actions/checkout@v4
 
+
+      # --------------------------------------------------------
+      # Python
+      # --------------------------------------------------------
+
       - name: Set up Python
         uses: actions/setup-python@v5
+
         with:
           python-version: "3.11"
+
+
+      # --------------------------------------------------------
+      # Install dependencies
+      # --------------------------------------------------------
 
       - name: Install dependencies
         run: |
@@ -32,35 +59,208 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
+
+      # --------------------------------------------------------
+      # Run tests
+      # --------------------------------------------------------
+
       - name: Run tests
         run: python -m pytest
+
+
+      # --------------------------------------------------------
+      # Build Docker image
+      # --------------------------------------------------------
 
       - name: Build Docker image
         run: docker build -t foodops:latest .
 
+
+      # --------------------------------------------------------
+      # AWS authentication
+      #
+      # Only main branch pushes should access AWS.
+      # Pull requests only run tests + Docker build.
+      # --------------------------------------------------------
+
       - name: Configure AWS credentials
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
         uses: aws-actions/configure-aws-credentials@v4
+
         with:
           role-to-assume: arn:aws:iam::859679100707:role/FoodOps-GitHubActions-ECR
           aws-region: us-east-1
 
+
+      # --------------------------------------------------------
+      # Login to ECR
+      # --------------------------------------------------------
+
       - name: Login to Amazon ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Tag Docker image
-        run: docker tag foodops:latest 859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
 
-      - name: Push Docker image to ECR
-        run: docker push 859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
-        
+      # --------------------------------------------------------
+      # Tag image with latest
+      # --------------------------------------------------------
+
+      - name: Tag latest Docker image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+        run: |
+          docker tag \
+            foodops:latest \
+            859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
+
+
+      # --------------------------------------------------------
+      # Tag image with Git commit SHA
+      # --------------------------------------------------------
+
+      - name: Tag Docker image with commit SHA
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+        run: |
+          docker tag \
+            foodops:latest \
+            859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:${{ github.sha }}
+
+
+      # --------------------------------------------------------
+      # Push latest image
+      # --------------------------------------------------------
+
+      - name: Push latest image to ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+        run: |
+          docker push \
+            859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
+
+
+      # --------------------------------------------------------
+      # Push immutable SHA image
+      # --------------------------------------------------------
+
+      - name: Push SHA image to ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+        run: |
+          docker push \
+            859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:${{ github.sha }}
+
+
+  # ==========================================================
+  # PRODUCTION DEPLOYMENT
+  # ==========================================================
+
   deploy:
+
     name: Deploy to Production
+
     needs: test
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     runs-on: ubuntu-latest
+
+
+    # --------------------------------------------------------
+    # Manual approval
+    # --------------------------------------------------------
 
     environment:
       name: production
 
+
     steps:
+
+      # ------------------------------------------------------
+      # Checkout Kubernetes manifests
+      # ------------------------------------------------------
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # Approval confirmation
+      # ------------------------------------------------------
+
       - name: Deployment approval received
-        run: echo "Manual approval received. Ready for deployment."
+        run: echo "Manual approval received. Starting production deployment."
+
+
+      # ------------------------------------------------------
+      # Configure AWS credentials
+      # ------------------------------------------------------
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+
+        with:
+          role-to-assume: arn:aws:iam::859679100707:role/FoodOps-GitHubActions-ECR
+          aws-region: us-east-1
+
+
+      # ------------------------------------------------------
+      # Configure kubectl for EKS
+      # ------------------------------------------------------
+
+      - name: Configure kubectl for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region us-east-1 \
+            --name FoodOps-EKS
+
+
+      # ------------------------------------------------------
+      # Verify EKS connection
+      # ------------------------------------------------------
+
+      - name: Verify EKS connection
+        run: |
+          kubectl get nodes
+
+
+      # ------------------------------------------------------
+      # Deploy Kubernetes manifests
+      # ------------------------------------------------------
+
+      - name: Deploy Kubernetes resources
+        run: |
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml
+
+
+      # ------------------------------------------------------
+      # Update Deployment with current image
+      # ------------------------------------------------------
+
+      - name: Update FoodOps image
+        run: |
+          kubectl set image deployment/foodops \
+            foodops=859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:${{ github.sha }}
+
+
+      # ------------------------------------------------------
+      # Wait for rollout
+      # ------------------------------------------------------
+
+      - name: Wait for deployment rollout
+        run: |
+          kubectl rollout status deployment/foodops --timeout=180s
+
+
+      # ------------------------------------------------------
+      # Verify application
+      # ------------------------------------------------------
+
+      - name: Verify FoodOps deployment
+        run: |
+          kubectl get deployment foodops
+          kubectl get pods
+          kubectl get service foodops-service
