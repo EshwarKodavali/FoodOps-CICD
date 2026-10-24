@@ -1,5 +1,21 @@
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
 .env
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Terraform working files
+terraform/.terraform/
+
+# Terraform state - never commit
+terraform/*.tfstate
+terraform/*.tfstate.*
+crash.log
+crash.*.log
