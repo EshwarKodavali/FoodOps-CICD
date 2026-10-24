@@ -52,3 +52,15 @@ jobs:
 
       - name: Push Docker image to ECR
         run: docker push 859679100707.dkr.ecr.us-east-1.amazonaws.com/foodops-v2:latest
+        
+  deploy:
+    name: Deploy to Production
+    needs: test
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - name: Deployment approval received
+        run: echo "Manual approval received. Ready for deployment."
