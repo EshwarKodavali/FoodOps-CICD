@@ -509,6 +509,37 @@ resource "aws_iam_policy" "github_actions_ecr_push" {
 
 
 # ============================================================
+# EKS DESCRIBE POLICY FOR GITHUB ACTIONS
+# ============================================================
+
+resource "aws_iam_policy" "github_actions_eks_describe" {
+  name        = "FoodOps-EKS-Describe"
+  description = "Allow GitHub Actions to describe the FoodOps EKS cluster"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "eks:DescribeCluster"
+        ]
+
+        Resource = aws_eks_cluster.foodops_eks.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_eks_describe" {
+  role       = aws_iam_role.github_actions_ecr.name
+  policy_arn = aws_iam_policy.github_actions_eks_describe.arn
+}
+
+
+# ============================================================
 # ATTACH ECR PUSH POLICY TO GITHUB ACTIONS ROLE
 # ============================================================
 
