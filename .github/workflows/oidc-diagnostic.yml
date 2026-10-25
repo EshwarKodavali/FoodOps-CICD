@@ -1,0 +1,32 @@
+name: OIDC Diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Inspect GitHub OIDC claims
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+
+            const payload = JSON.parse(
+              Buffer.from(
+                token.split('.')[1],
+                'base64url'
+              ).toString()
+            );
+
+            core.info(`OIDC sub: ${payload.sub}`);
+            core.info(`OIDC aud: ${payload.aud}`);
+            core.info(`OIDC repository: ${payload.repository}`);
+            core.info(`OIDC ref: ${payload.ref}`);
+            core.info(`OIDC environment: ${payload.environment || 'none'}`);
