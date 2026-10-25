@@ -452,7 +452,7 @@ resource "aws_iam_role" "github_actions_ecr" {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
               "repo:EshwarKodavali@110181805/FoodOps-CICD@1424750867:ref:refs/heads/main",
-              "repo:EshwarKodavali/FoodOps-CICD:environment:production"
+              "repo:EshwarKodavali@110181805/FoodOps-CICD@1424750867:environment:production"
             ]
           }
         }
