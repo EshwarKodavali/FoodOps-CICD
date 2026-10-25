@@ -199,6 +199,17 @@ jobs:
       - name: Deployment approval received
         run: echo "Manual approval received. Starting production deployment."
 
+      - name: Diagnose GitHub OIDC claims
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const payload = JSON.parse(
+              Buffer.from(token.split('.')[1], 'base64url').toString()
+            );
+            core.info(`OIDC sub: ${payload.sub}`);
+            core.info(`OIDC aud: ${payload.aud}`);
+
 
       # ------------------------------------------------------
       # Configure AWS credentials
